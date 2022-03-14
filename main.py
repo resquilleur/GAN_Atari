@@ -23,7 +23,7 @@ IMAGE_SIZE = (64, 64)
 LR = 1e-4
 REPORT_EVERY_ITER = 100
 SAVE_IMAGE_EVERY_ITER = 1e3
-ENV_NAMES = ('Breakout-v0', 'AirRaid-v0', 'Pong-v0')
+ENV_NAMES = ("Breakout-v0", "AirRaid-v0", "Pong-v0")
 
 
 # Press the green button in the gutter to run the script.
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
         iter_no +=1
         if iter_no % REPORT_EVERY_ITER == 0:
-            log.info("Iter %d: gen_loss=%.3e, dis_loss=%.3e", iter_no, np.mean(gen_losses), np.mean(dis_loss))
+            log.info("Iter %d: gen_loss=%.3e, dis_loss=%.3e", iter_no, np.mean(gen_losses), np.mean(dis_losses))
             writer.add_scalar("gen_loss", np.mean(gen_losses), iter_no)
             writer.add_scalar("dis_loss", np.mean(dis_losses), iter_no)
             gen_losses = []

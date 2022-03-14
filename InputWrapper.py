@@ -11,17 +11,16 @@ class InputWrapper(gym.ObservationWrapper):
     2. move color channel axis to a first place
     """
 
-    def __init__(self, image_size, *args):
+    def __init__(self, *args):
         super(InputWrapper, self).__init__(*args)
         assert isinstance(self.observation_space, gym.spaces.Box)
         old_space = self.observation_space
         self.observation_space = gym.spaces.Box(self.observation(old_space.low), self.observation(old_space.high),
                                                 dtype=np.float32)
-        self.IMAGE_SIZE = image_size
 
     def observation(self, observation):
         # resize image
-        new_obs = cv2.resize(observation, self.IMAGE_SIZE)
+        new_obs = cv2.resize(observation, (64, 64))
         # transform (210, 160, 3) -> (3, 210, 160)
         new_obs = np.moveaxis(new_obs, 2, 0)
         return new_obs.astype(np.float32)
