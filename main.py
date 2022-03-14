@@ -15,6 +15,7 @@ from InputWrapper import InputWrapper
 log = gym.logger
 log.set_level(gym.logger.INFO)
 
+EPOCHS = 70000
 BATCH_SIZE = 16
 LATENT_VECTOR_SIZE = 16
 DISCR_FILTERS = 64
@@ -51,11 +52,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     device = torch.device("cuda" if args.cuda else "cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     envs = [InputWrapper(gym.make(name)) for name in ENV_NAMES]
     input_shape = envs[0].observation_space.shape
 
     net_discr = Discriminator(input_shape=input_shape, discr_filters=DISCR_FILTERS).to(device)
-    net_gener = Generator(output_shape=input_shape, gener_filters=GENER_FILTERS, latent_vector=LATENT_VECTOR_SIZE)
+    net_gener = Generator(output_shape=input_shape, gener_filters=GENER_FILTERS,
+                          latent_vector=LATENT_VECTOR_SIZE).to(device)
 
     objective = nn.BCELoss()
     gen_optimizer = optim.Adam(params=net_gener.parameters(), lr=LR, betas=(0.5, 0.999))
@@ -103,3 +106,6 @@ if __name__ == '__main__':
             writer.add_image("fake", vutils.make_grid(gen_output_v.data[:64], normalize=True), iter_no)
             writer.add_image("real", vutils.make_grid(batch_v.data[:64], normalize=True), iter_no)
 
+        if iter_no == EPOCHS:
+            writer.close()
+            break
